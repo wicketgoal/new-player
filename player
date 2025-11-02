@@ -1,0 +1,73 @@
+<!-- Live Stream Player with LIVE Banner Start -->
+<div style="position: relative; width: 100%; max-width: 800px; margin: auto; background: #000; font-family: system-ui, sans-serif;">
+  
+  <!-- Your Logo -->
+  <div style="position: absolute; top: 10px; left: 10px; z-index: 10;">
+    <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhoxpwoPC4C3SOKKQ2qhb-iDNeYGafQmJmu2CwtjzBBidp4JYJEFGjmjN4PFhO6Te5x2zNbzZlQqrBi2" alt="Logo" style="height: 50px;">
+  </div>
+
+  <!-- LIVE Banner -->
+  <div style="position: absolute; top: 10px; right: 10px; z-index: 10; background: red; color: white; padding: 5px 12px; font-weight: bold; font-size: 14px; border-radius: 4px; text-transform: uppercase;">
+    LIVE MATCH
+  </div>
+
+  <!-- Shaka Player Container -->
+  <div class="shaka-video-container" data-shaka-player style="width: 100%; height: 0; padding-bottom: 56.25%; position: relative;">
+    <video autoplay playsinline preload="metadata" poster="https://assets.tntsports.io/web/img/og/tntsports.jpg" style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit: contain;"></video>
+  </div>
+</div>
+
+<!-- Shaka Player Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  shaka.polyfill.installAll();
+
+  if (!shaka.Player.isBrowserSupported()) {
+    console.error('Browser not supported');
+    return;
+  }
+
+  const video = document.querySelector('video');
+  const player = new shaka.Player();
+  await player.attach(video);
+
+  const container = document.querySelector('.shaka-video-container');
+  const ui = new shaka.ui.Overlay(player, container, video);
+
+  ui.configure({
+    controlPanelElements: [
+      'play_pause', 'time_and_duration', 'mute', 'volume',
+      'spacer', 'language', 'captions', 'picture_in_picture',
+      'quality', 'fullscreen'
+    ],
+    volumeBarColors: { base: 'rgba(255,192,203,0.3)', level: 'rgb(255,105,180)' },
+    seekBarColors: { base: 'rgba(255,255,0,0.3)', buffered: 'rgba(255,255,0,0.6)', played: 'rgb(255,255,0)' }
+  });
+
+  // DRM Keys
+  let drmConfig = {
+    clearKeys: {
+      "d0f2e5c39e70c18f29bf77768a1ad89a": "d6853c51fcf37a18905f0609972395d7"
+    }
+  };
+
+  // DASH Stream URL
+  let streamUrl = "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd";
+
+  player.configure({
+    drm: drmConfig,
+    streaming: { lowLatencyMode: true },
+  });
+
+  try {
+    await player.load(streamUrl);
+    console.log("Stream loaded successfully");
+  } catch (error) {
+    console.error('Load error:', error);
+  }
+});
+</script>
+<!-- Live Stream Player with LIVE Banner End -->
