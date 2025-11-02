@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live Stream Player Fullscreen</title>
 
-<!-- Shaka Player -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
 
@@ -13,8 +12,8 @@
   html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
     width: 100%;
+    height: 100%;
     background: #000;
     overflow: hidden;
   }
@@ -37,7 +36,7 @@
   .live-banner {
     position: absolute;
     top: 20px;
-    right: 80px; /* shifted left */
+    right: 80px;
     z-index: 10;
     background: red;
     color: white;
@@ -50,7 +49,7 @@
   }
 
   @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
+    0%,100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.1); opacity: 0.8; }
   }
 
@@ -62,20 +61,6 @@
     z-index: 10;
     height: 60px;
   }
-
-  /* Dropdown */
-  .stream-select {
-    position: absolute;
-    top: 20px;
-    left: 100px; /* right of logo */
-    z-index: 10;
-    padding: 6px 10px;
-    font-size: 14px;
-    border-radius: 4px;
-    border: none;
-    outline: none;
-    background: rgba(255,255,255,0.9);
-  }
 </style>
 </head>
 
@@ -86,13 +71,6 @@
 
 <!-- LIVE Banner -->
 <div class="live-banner">LIVE MATCH</div>
-
-<!-- Stream Selector -->
-<select class="stream-select" id="streamSelector">
-  <option value="https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd">Stream 1</option>
-  <option value="https://example.com/stream2.mpd">Stream 2</option>
-  <option value="https://example.com/stream3.mpd">Stream 3</option>
-</select>
 
 <!-- Shaka Player Video Container -->
 <div class="shaka-video-container" data-shaka-player>
@@ -123,34 +101,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     ]
   });
 
-  // DRM Keys
+  // DRM Keys (if same for all streams)
   const drmConfig = {
     clearKeys: {
       "d0f2e5c39e70c18f29bf77768a1ad89a": "d6853c51fcf37a18905f0609972395d7"
     }
   };
-
   player.configure({ drm: drmConfig, streaming: { lowLatencyMode: true } });
 
-  // Function to load a stream
-  async function loadStream(url) {
-    try {
-      await player.load(url);
-      console.log('Stream loaded:', url);
-    } catch (e) {
-      console.error('Failed to load stream', e);
-      alert('Failed to load the stream. Check the URL or DRM.');
-    }
+  // Define MPD links
+  const streams = {
+    "1": "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd",
+    "2": "https://example.com/stream2.mpd",
+    "3": "https://example.com/stream3.mpd"
+  };
+
+  // Get 'id' parameter from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id') || "1"; // default to 1 if not provided
+
+  const streamUrl = streams[id] || streams["1"]; // fallback to stream 1
+
+  try {
+    await player.load(streamUrl);
+    console.log("Loaded stream ID:", id, streamUrl);
+  } catch (error) {
+    console.error("Failed to load stream:", error);
+    alert("Failed to load the live stream. Check the stream ID or DRM.");
   }
-
-  // Load initial stream
-  const selector = document.getElementById('streamSelector');
-  loadStream(selector.value);
-
-  // Switch stream when dropdown changes
-  selector.addEventListener('change', () => {
-    loadStream(selector.value);
-  });
 });
 </script>
 
