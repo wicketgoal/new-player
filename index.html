@@ -34,21 +34,20 @@
   }
 
   /* LIVE Banner */
-.live-banner {
-  position: absolute;
-  top: 20px;
-  right: 60px; /* shifted left from 20px to 80px */
-  z-index: 10;
-  background: red;
-  color: white;
-  padding: 8px 16px;
-  font-weight: bold;
-  font-size: 16px;
-  border-radius: 4px;
-  text-transform: uppercase;
-  animation: pulse 1s infinite;
-}
-
+  .live-banner {
+    position: absolute;
+    top: 20px;
+    right: 80px; /* shifted left */
+    z-index: 10;
+    background: red;
+    color: white;
+    padding: 8px 16px;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    animation: pulse 1s infinite;
+  }
 
   @keyframes pulse {
     0%, 100% { transform: scale(1); opacity: 1; }
@@ -63,16 +62,37 @@
     z-index: 10;
     height: 60px;
   }
+
+  /* Dropdown */
+  .stream-select {
+    position: absolute;
+    top: 20px;
+    left: 100px; /* right of logo */
+    z-index: 10;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.9);
+  }
 </style>
 </head>
 
 <body>
 
 <!-- Logo -->
-<img class="logo" src="" alt="Logo">
+<img class="logo" src="https://blogger.googleusercontent.com/img/a/AVvXsEhoxpwoPC4C3SOKKQ2qhb-iDNeYGafQmJmu2CwtjzBBidp4JYJEFGjmjN4PFhO6Te5x2zNbzZlQqrBi2" alt="Logo">
 
 <!-- LIVE Banner -->
-<div class="live-banner">WICKETGOAL.COM</div>
+<div class="live-banner">LIVE MATCH</div>
+
+<!-- Stream Selector -->
+<select class="stream-select" id="streamSelector">
+  <option value="https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd">Stream 1</option>
+  <option value="https://example.com/stream2.mpd">Stream 2</option>
+  <option value="https://example.com/stream3.mpd">Stream 3</option>
+</select>
 
 <!-- Shaka Player Video Container -->
 <div class="shaka-video-container" data-shaka-player>
@@ -110,17 +130,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  // DASH Stream URL
-  const streamUrl = "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd";
-
   player.configure({ drm: drmConfig, streaming: { lowLatencyMode: true } });
 
-  try {
-    await player.load(streamUrl);
-    console.log("Stream loaded successfully");
-  } catch (error) {
-    console.error('Stream failed to load:', error);
-    alert('Failed to load the live stream. It may be restricted in your region.');
+  // Function to load a stream
+  async function loadStream(url) {
+    try {
+      await player.load(url);
+      console.log('Stream loaded:', url);
+    } catch (e) {
+      console.error('Failed to load stream', e);
+      alert('Failed to load the stream. Check the URL or DRM.');
+    }
   }
+
+  // Load initial stream
+  const selector = document.getElementById('streamSelector');
+  loadStream(selector.value);
+
+  // Switch stream when dropdown changes
+  selector.addEventListener('change', () => {
+    loadStream(selector.value);
+  });
 });
 </script>
+
+</body>
+</html>
