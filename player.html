@@ -1,9 +1,9 @@
-<!-- Live Stream Player with LIVE Banner Start -->
+<!-- Live Stream Player for Blogger Start -->
 <div style="position: relative; width: 100%; max-width: 800px; margin: auto; background: #000; font-family: system-ui, sans-serif;">
-  
+
   <!-- Your Logo -->
   <div style="position: absolute; top: 10px; left: 10px; z-index: 10;">
-    <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhoxpwoPC4C3SOKKQ2qhb-iDNeYGafQmJmu2CwtjzBBidp4JYJEFGjmjN4PFhO6Te5x2zNbzZlQqrBi2" alt="Logo" style="height: 50px;">
+    <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhoxpwoPC4C3SOKKQ2qhb-iDNeYGafQmJmu2CwtjzBBidp4JYJEFGjmjN4PFhO6Te5x2zNbzZlQqrBi2vaIGjNfE9qSF2VJRzEqxh9ulPnJAGdKZB5ZhB5XVIqSgZR2AHjSq4VRzb6uLdlIKJvhsl5-BxKnRocPqMYNxqJxR1AWLeNuR_jEXSP1540tqyw=s313" alt="Logo" style="height: 50px;" />
   </div>
 
   <!-- LIVE Banner -->
@@ -19,14 +19,15 @@
 
 <!-- Shaka Player Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous" />
 
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
+  // Install polyfills
   shaka.polyfill.installAll();
 
   if (!shaka.Player.isBrowserSupported()) {
-    console.error('Browser not supported');
+    alert('Your browser does not support this player.');
     return;
   }
 
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const player = new shaka.Player();
   await player.attach(video);
 
+  // Overlay for controls
   const container = document.querySelector('.shaka-video-container');
   const ui = new shaka.ui.Overlay(player, container, video);
 
@@ -47,27 +49,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     seekBarColors: { base: 'rgba(255,255,0,0.3)', buffered: 'rgba(255,255,0,0.6)', played: 'rgb(255,255,0)' }
   });
 
-  // DRM Keys
-  let drmConfig = {
+  // DRM Keys (for this protected stream)
+  const drmConfig = {
     clearKeys: {
       "d0f2e5c39e70c18f29bf77768a1ad89a": "d6853c51fcf37a18905f0609972395d7"
     }
   };
 
-  // DASH Stream URL
-  let streamUrl = "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd";
+  // DASH Stream URL (client-side fetch)
+  const streamUrl = "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd";
 
-  player.configure({
-    drm: drmConfig,
-    streaming: { lowLatencyMode: true },
-  });
+  player.configure({ drm: drmConfig, streaming: { lowLatencyMode: true } });
 
   try {
     await player.load(streamUrl);
     console.log("Stream loaded successfully");
   } catch (error) {
-    console.error('Load error:', error);
+    console.error('Stream failed to load:', error);
+    alert('Failed to load the live stream. It may be restricted in your region.');
   }
 });
 </script>
-<!-- Live Stream Player with LIVE Banner End -->
+<!-- Live Stream Player for Blogger End -->
