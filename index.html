@@ -70,6 +70,43 @@
     z-index: 10;
     height: 60px;
   }
+
+   /* Bottom-center overlay text (slightly higher) */
+  #overlay-text {
+    position: absolute;
+    bottom: 60px; /* moved higher */
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+    z-index: 10;
+    pointer-events: none;
+    font-family: 'Roboto', sans-serif;
+  } /* Bottom-center overlay text */
+  #overlay-text {
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2vw;
+    min-font-size: 12px;
+    max-font-size: 20px;
+    font-weight: 600;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+    z-index: 10;
+    pointer-events: none;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  @media (max-width: 600px) {
+    #overlay-text {
+      font-size: 14px;
+      bottom: 8%;
+    }
+  }
 </style>
 </head>
 
@@ -85,7 +122,7 @@
 <div class="shaka-video-container" data-shaka-player>
   <video autoplay playsinline preload="metadata" poster="https://assets.tntsports.io/web/img/og/tntsports.jpg"></video>
 </div>
-
+<div id="overlay-text">WicketGoal.com</div>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   shaka.polyfill.installAll();
