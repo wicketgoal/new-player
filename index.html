@@ -18,16 +18,37 @@
     overflow: hidden;
   }
 
-  <!-- 🔴 TOP NEWS TICKER BAR -->
-<div class="top-ticker">
-  <div class="ticker-content">
-    LIVE STREAMING – WicketGoal.com – Enjoy HD Sports Streaming – Stay Tuned!
-  </div>
-</div>
+  /* 🔴 TOP NEWS TICKER */
+  .top-ticker {
+    width: 100%;
+    background: red;
+    color: white;
+    overflow: hidden;
+    white-space: nowrap;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 9999;
+  }
 
+  .ticker-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: ticker 12s linear infinite;
+  }
+
+  @keyframes ticker {
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* Push video down below ticker */
   .shaka-video-container {
     position: absolute;
-    top: 50px; /* pushes video below the red bar */
+    top: 50px; /* ticker height */
     left: 0;
     right: 0;
     bottom: 0;
@@ -108,42 +129,12 @@
 
 <body>
 
-
-  /* 🔴 TOP NEWS TICKER */
-  .top-ticker {
-    width: 100%;
-    background: red;
-    color: white;
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-    z-index: 9999;
-  }
-
-  .ticker-content {
-    display: inline-block;
-    padding-left: 100%;
-    animation: ticker 12s linear infinite;
-  }
-
-  @keyframes ticker {
-    0%   { transform: translateX(0%); }
-    100% { transform: translateX(-100%); }
-  }
-
-  /* Push the video down below ticker */
-  .shaka-video-container {
-    position: absolute;
-    top: 50px; /* height of ticker */
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: calc(100% - 50px);
-  }
+<!-- 🔴 TOP NEWS TICKER BAR -->
+<div class="top-ticker">
+  <div class="ticker-content">
+    LIVE STREAMING – WicketGoal.com – Enjoy HD Sports Streaming – Stay Tuned!
+  </div>
+</div>
 
 <!-- Logo -->
 <img src="" class="logo" alt="Logo">
@@ -200,7 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       url: "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd",
       keyId: "abcd1234abcd1234abcd1234abcd1234",
       key: "1234abcd1234abcd1234abcd1234abcd"
-    },
+    }
   };
 
   const urlParams = new URLSearchParams(window.location.search);
