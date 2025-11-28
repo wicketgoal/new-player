@@ -18,21 +18,36 @@
     overflow: hidden;
   }
 
+  /* 🔴 TOP TEXT BAR */
+  .top-text-bar {
+    width: 100%;
+    background: red;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 9999;
+    position: relative;
+  }
+
   .shaka-video-container {
     position: absolute;
-    inset: 0;
+    top: 50px; /* pushes video below the red bar */
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 50px);
   }
 
   .shaka-spinner-container,
-.shaka-spinner,
-.shaka-spinner-svg {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-}
-
+  .shaka-spinner,
+  .shaka-spinner-svg {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+  }
 
   video {
     width: 100%;
@@ -44,7 +59,7 @@
   /* LIVE Banner */
   .live-banner {
     position: absolute;
-    top: 20px;
+    top: 70px;
     right: 80px;
     z-index: 10;
     background: red;
@@ -65,26 +80,13 @@
   /* Logo */
   .logo {
     position: absolute;
-    top: 20px;
+    top: 70px;
     left: 20px;
     z-index: 10;
     height: 60px;
   }
 
-   /* Bottom-center overlay text (slightly higher) */
-  #overlay-text {
-    position: absolute;
-    bottom: 60px; /* moved higher */
-    left: 50%;
-    transform: translateX(-50%);
-    color: #fff;
-    font-size: 22px;
-    font-weight: 700;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-    z-index: 10;
-    pointer-events: none;
-    font-family: 'Roboto', sans-serif;
-  } /* Bottom-center overlay text */
+  /* Bottom-center overlay text */
   #overlay-text {
     position: absolute;
     bottom: 5%;
@@ -112,17 +114,22 @@
 
 <body>
 
+<!-- 🔴 TOP TEXT BAR -->
+<div class="top-text-bar">LIVE STREAMING – WicketGoal.com</div>
+
 <!-- Logo -->
-<img  src="" alt="Logo">
+<img src="" class="logo" alt="Logo">
 
 <!-- LIVE Banner -->
-<div class=""></div>
+<div class="live-banner">LIVE</div>
 
 <!-- Shaka Player Video Container -->
 <div class="shaka-video-container" data-shaka-player>
   <video autoplay playsinline preload="metadata" poster="https://htmlburger.com/blog/wp-content/uploads/2021/07/The-Best-50-Website-Preloaders-Around-the-Web-Example-36.gif"></video>
 </div>
+
 <div id="overlay-text">WicketGoal.com</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   shaka.polyfill.installAll();
@@ -145,7 +152,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     ]
   });
 
-  // Define multiple streams with their keys
   const streams = {
     "1": {
       url: "https://a204aivottepl-a.akamaihd.net/sin-nitro/live/clients/dash/enc/fdb3pubmek/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
@@ -169,9 +175,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     },
   };
 
-  // Get ?id= parameter from the URL (e.g. ?id=2)
   const urlParams = new URLSearchParams(window.location.search);
-  const id = urlParams.get('id') || "1"; // default to 1
+  const id = urlParams.get('id') || "1";
 
   const stream = streams[id];
   if (!stream) {
@@ -179,7 +184,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // Configure DRM dynamically
   player.configure({
     drm: {
       clearKeys: {
@@ -191,12 +195,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Load selected stream
   try {
     await player.load(stream.url);
-    console.log("✅ Loaded stream ID:", id);
+    console.log("Loaded stream ID:", id);
   } catch (error) {
-    console.error("❌ Failed to load stream:", error);
+    console.error("Failed to load stream:", error);
     alert("Failed to load the selected live stream.");
   }
 });
