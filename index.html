@@ -18,51 +18,21 @@
     overflow: hidden;
   }
 
-  /* 🔴 TOP NEWS TICKER */
-  .top-ticker {
-    width: 100%;
-    background: red;
-    color: white;
-    overflow: hidden;
-    white-space: nowrap;
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 10px 0;
-    font-size: 18px;
-    font-weight: bold;
-    z-index: 9999;
-  }
-
-  .ticker-content {
-    display: inline-block;
-    padding-left: 100%;
-    animation: ticker 12s linear infinite;
-  }
-
-  @keyframes ticker {
-    0%   { transform: translateX(0%); }
-    100% { transform: translateX(-100%); }
-  }
-
-  /* Push video down below ticker */
   .shaka-video-container {
     position: absolute;
-    top: 50px; /* ticker height */
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     width: 100%;
-    height: calc(100% - 50px);
+    height: 100%;
   }
 
   .shaka-spinner-container,
-  .shaka-spinner,
-  .shaka-spinner-svg {
-      display: none !important;
-      visibility: hidden !important;
-      opacity: 0 !important;
-  }
+.shaka-spinner,
+.shaka-spinner-svg {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
 
   video {
     width: 100%;
@@ -74,7 +44,7 @@
   /* LIVE Banner */
   .live-banner {
     position: absolute;
-    top: 70px;
+    top: 20px;
     right: 80px;
     z-index: 10;
     background: red;
@@ -95,13 +65,26 @@
   /* Logo */
   .logo {
     position: absolute;
-    top: 70px;
+    top: 20px;
     left: 20px;
     z-index: 10;
     height: 60px;
   }
 
-  /* Bottom-center overlay text */
+   /* Bottom-center overlay text (slightly higher) */
+  #overlay-text {
+    position: absolute;
+    bottom: 60px; /* moved higher */
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+    z-index: 10;
+    pointer-events: none;
+    font-family: 'Roboto', sans-serif;
+  } /* Bottom-center overlay text */
   #overlay-text {
     position: absolute;
     bottom: 5%;
@@ -129,26 +112,17 @@
 
 <body>
 
-<!-- 🔴 TOP NEWS TICKER BAR -->
-<div class="top-ticker">
-  <div class="ticker-content">
-    Watch ICC T20 World Cup 2026 at WicketGoal.com 
-  </div>
-</div>
-
 <!-- Logo -->
-<img src="" class="logo" alt="Logo">
+<img  src="" alt="Logo">
 
 <!-- LIVE Banner -->
-<div class="live-banner">LIVE</div>
+<div class=""></div>
 
 <!-- Shaka Player Video Container -->
 <div class="shaka-video-container" data-shaka-player>
-  <video autoplay playsinline preload="metadata" poster="https://htmlburger.com/blog/wp-content/uploads/2021/07/The-Best-50-Website-Preloaders-Around-the-Web-Example-36.gif"></video>
+  <video autoplay playsinline preload="metadata" poster="https://assets.tntsports.io/web/img/og/tntsports.jpg"></video>
 </div>
-
 <div id="overlay-text">WicketGoal.com</div>
-
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   shaka.polyfill.installAll();
@@ -171,6 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ]
   });
 
+  // Define multiple streams with their keys
   const streams = {
     "1": {
       url: "https://a204aivottepl-a.akamaihd.net/sin-nitro/live/clients/dash/enc/fdb3pubmek/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd",
@@ -191,11 +166,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       url: "https://ottb.live.cf.ww.aiv-cdn.net/lhr-nitro/live/dash/enc/bsaaetko8v/out/v1/bd3b0c314fff4bb1ab4693358f3cd2d3/cenc.mpd",
       keyId: "abcd1234abcd1234abcd1234abcd1234",
       key: "1234abcd1234abcd1234abcd1234abcd"
-    }
+    },
   };
 
+  // Get ?id= parameter from the URL (e.g. ?id=2)
   const urlParams = new URLSearchParams(window.location.search);
-  const id = urlParams.get('id') || "1";
+  const id = urlParams.get('id') || "1"; // default to 1
 
   const stream = streams[id];
   if (!stream) {
@@ -203,6 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  // Configure DRM dynamically
   player.configure({
     drm: {
       clearKeys: {
@@ -214,11 +191,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Load selected stream
   try {
     await player.load(stream.url);
-    console.log("Loaded stream ID:", id);
+    console.log("✅ Loaded stream ID:", id);
   } catch (error) {
-    console.error("Failed to load stream:", error);
+    console.error("❌ Failed to load stream:", error);
     alert("Failed to load the selected live stream.");
   }
 });
